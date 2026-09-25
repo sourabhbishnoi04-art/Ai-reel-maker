@@ -310,7 +310,7 @@ esc(idea)+
 
 "</button>";
 
-}
+generateAIVideo();}
 
 function copyPrompts(){
 
@@ -323,7 +323,61 @@ alert("AI prompts copy ho gaye ✅");
 });
 
 }
+async function generateAIVideo(){
 
+const idea=document.getElementById("idea").value.trim();
+const style=document.getElementById("style").value;
+const duration=parseInt(document.getElementById("duration").value);
+
+if(!idea){
+alert("Pehle Reel ka idea likho.");
+return;
+}
+
+const btn=document.createElement("button");
+btn.innerText="🎬 Generate AI Video";
+btn.style.marginTop="15px";
+btn.onclick=async function(){
+
+btn.innerText="⏳ Video generate ho raha hai...";
+btn.disabled=true;
+
+try{
+
+const response=await fetch("/api/generate-video",{
+method:"POST",
+headers:{
+"Content-Type":"application/json"
+},
+body:JSON.stringify({
+prompt:style+" video, "+idea+", vertical 9:16, realistic, cinematic, Instagram Reel style",
+duration:duration
+})
+});
+
+const data=await response.json();
+
+if(!response.ok){
+throw new Error(data.error || "Video generation failed");
+}
+
+alert("Video generation start ho gayi ✅\nProject ID: "+data.projectId);
+
+btn.innerText="✅ Generation Started";
+
+}catch(error){
+
+alert("Error: "+error.message);
+btn.innerText="🎬 Generate AI Video";
+btn.disabled=false;
+
+}
+
+};
+
+document.getElementById("result").appendChild(btn);
+
+  }
 </script>
 
 </body>
