@@ -327,7 +327,6 @@ async function generateAIVideo(){
 
 const idea=document.getElementById("idea").value.trim();
 const style=document.getElementById("style").value;
-const duration=parseInt(document.getElementById("duration").value);
 
 if(!idea){
 alert("Pehle Reel ka idea likho.");
@@ -337,6 +336,7 @@ return;
 const btn=document.createElement("button");
 btn.innerText="🎬 Generate AI Video";
 btn.style.marginTop="15px";
+
 btn.onclick=async function(){
 
 btn.innerText="⏳ Video generate ho raha hai...";
@@ -351,7 +351,7 @@ headers:{
 },
 body:JSON.stringify({
 prompt:style+" video, "+idea+", vertical 9:16, realistic, cinematic, Instagram Reel style",
-duration:duration
+duration:15
 })
 });
 
@@ -361,13 +361,67 @@ if(!response.ok){
 throw new Error(data.error || "Video generation failed");
 }
 
-alert("Video generation start ho gayi ✅\nProject ID: "+data.projectId);
+const projectId=data.projectId;
 
-btn.innerText="✅ Generation Started";
+btn.innerText="⏳ Video render ho raha hai...";
+
+let attempts=0;
+
+async function checkVideo(){
+
+attempts++;
+
+const statusResponse=await fetch(
+"/api/generate-video?id="+encodeURIComponent(projectId)
+);
+
+const statusData=await statusResponse.json();
+
+if(!statusResponse.ok){
+throw new Error(statusData.error || "Status check failed");
+}
+
+const downloadUrl=
+statusData?.download?.url ||
+statusData?.downloads?.[0]?.url;
+
+if(downloadUrl){
+
+btn.outerHTML=
+"<a href='"+downloadUrl+"' target='_blank' rel='noopener' download " +
+"style='display:block;text-align:center;text-decoration:none;" +
+"background:#111;color:white;padding:15px;border-radius:12px;" +
+"margin-top:15px;font-size:17px;font-weight:bold;'>" +
+"⬇️ Download Video</a>";
+
+return;
+}
+
+const status=String(statusData.status || "").toLowerCase();
+
+if(status==="error" || status==="failed" || status==="canceled" || status==="cancelled"){
+throw new Error("Video generation failed");
+}
+
+if(attempts<60){
+
+setTimeout(checkVideo,5000);
+
+}else{
+
+btn.innerText="⚠️ Video abhi ready nahi hua";
+btn.disabled=false;
+
+}
+
+}
+
+await checkVideo();
 
 }catch(error){
 
 alert("Error: "+error.message);
+
 btn.innerText="🎬 Generate AI Video";
 btn.disabled=false;
 
@@ -377,7 +431,7 @@ btn.disabled=false;
 
 document.getElementById("result").appendChild(btn);
 
-  }
+}
 </script>
 
 </body>
