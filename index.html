@@ -1,125 +1,330 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AI Reel Maker</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Reel Maker</title>
 
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f4f4;
-      margin: 0;
-      padding: 20px;
-    }
+<style>
+*{box-sizing:border-box}
 
-    .box {
-      max-width: 600px;
-      margin: 30px auto;
-      background: white;
-      padding: 25px;
-      border-radius: 15px;
-      box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-    }
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:linear-gradient(135deg,#f6f7fb,#e9edf5);
+  color:#111;
+}
 
-    h1 {
-      text-align: center;
-    }
+.box{
+  max-width:680px;
+  margin:28px auto;
+  padding:24px;
+  background:white;
+  border-radius:22px;
+  box-shadow:0 10px 35px rgba(0,0,0,.12);
+}
 
-    textarea {
-      width: 100%;
-      height: 120px;
-      padding: 12px;
-      box-sizing: border-box;
-      border-radius: 10px;
-      border: 1px solid #ccc;
-      font-size: 16px;
-    }
+h1{
+  text-align:center;
+  font-size:32px;
+  margin:8px 0;
+}
 
-    button {
-      width: 100%;
-      margin-top: 15px;
-      padding: 14px;
-      border: none;
-      border-radius: 10px;
-      background: #111;
-      color: white;
-      font-size: 16px;
-      cursor: pointer;
-    }
+.sub{
+  text-align:center;
+  color:#666;
+  margin-bottom:25px;
+}
 
-    #result {
-      margin-top: 20px;
-      padding: 15px;
-      background: #f1f1f1;
-      border-radius: 10px;
-      display: none;
-    }
-  </style>
+label{
+  display:block;
+  font-weight:bold;
+  margin:16px 0 8px;
+}
+
+textarea,select{
+  width:100%;
+  padding:13px;
+  border:1px solid #ccc;
+  border-radius:12px;
+  font-size:16px;
+  background:white;
+}
+
+textarea{
+  height:130px;
+  resize:vertical;
+}
+
+.row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
+button{
+  width:100%;
+  margin-top:18px;
+  padding:15px;
+  border:0;
+  border-radius:12px;
+  background:#111;
+  color:white;
+  font-size:17px;
+  font-weight:bold;
+}
+
+#result{
+  margin-top:22px;
+  padding:20px;
+  background:#f5f6f8;
+  border-radius:16px;
+  display:none;
+}
+
+.card{
+  background:white;
+  padding:15px;
+  border-radius:12px;
+  margin:12px 0;
+  border:1px solid #e4e4e4;
+}
+
+.scene{
+  padding:10px 0;
+  border-bottom:1px solid #eee;
+}
+
+.small{
+  font-size:13px;
+  color:#777;
+}
+
+.copy{
+  background:white;
+  color:#111;
+  border:1px solid #ccc;
+  font-size:14px;
+}
+
+@media(max-width:600px){
+  .box{
+    margin:0;
+    border-radius:0;
+    min-height:100vh;
+  }
+
+  .row{
+    grid-template-columns:1fr;
+  }
+}
+</style>
 </head>
 
 <body>
 
-  <div class="box">
+<div class="box">
 
-    <h1>🎬 AI Reel Maker</h1>
+<h1>🎬 AI Reel Maker</h1>
 
-    <p>Apni Reel ka idea likho:</p>
+<p class="sub">
+Idea se complete Reel Plan + AI Video Prompts
+</p>
 
-    <textarea id="idea"
-      placeholder="Example: Ek realistic fashion reel ek ladki ki..."></textarea>
+<label>📝 Apni Reel ka idea likho</label>
 
-    <button onclick="generateReel()">
-      Generate Reel Plan
-    </button>
+<textarea id="idea"
+placeholder="Example: Ek realistic fashion reel ek ladki ki, stylish black outfit, cinematic shots..."></textarea>
 
-    <div id="result"></div>
+<div class="row">
 
-  </div>
+<div>
+<label>🎨 Style</label>
 
-  <script>
+<select id="style">
+<option>Realistic</option>
+<option>Cinematic</option>
+<option>Luxury</option>
+<option>Viral Instagram</option>
+<option>90s Bollywood</option>
+</select>
+</div>
 
-    function generateReel() {
+<div>
+<label>⏱️ Duration</label>
 
-      let idea = document.getElementById("idea").value;
+<select id="duration">
+<option>15 seconds</option>
+<option>30 seconds</option>
+<option>45 seconds</option>
+<option>60 seconds</option>
+</select>
+</div>
 
-      if (idea.trim() === "") {
-        alert("Pehle Reel ka idea likho.");
-        return;
-      }
+</div>
 
-      document.getElementById("result").style.display = "block";
+<button onclick="generateReel()">
+✨ Create Reel Plan
+</button>
 
-      document.getElementById("result").innerHTML =
+<div id="result"></div>
 
-        "<h3>📝 Reel Script</h3>" +
+</div>
 
-        "<p>" +
-        idea +
-        " — is idea par ek engaging Instagram Reel banayi jayegi." +
-        "</p>" +
+<script>
 
-        "<h3>🎥 Scene Plan</h3>" +
+function esc(text){
+return text.replace(/[&<>"']/g,function(c){
+return {
+'&':'&amp;',
+'<':'&lt;',
+'>':'&gt;',
+'"':'&quot;',
+"'":'&#039;'
+}[c];
+});
+}
 
-        "<p>Scene 1: Strong opening shot</p>" +
-        "<p>Scene 2: Main action</p>" +
-        "<p>Scene 3: Close-up shot</p>" +
-        "<p>Scene 4: Main highlight</p>" +
-        "<p>Scene 5: Ending + Follow CTA</p>" +
+function generateReel(){
 
-        "<h3>📌 Caption</h3>" +
+const idea=document.getElementById("idea").value.trim();
 
-        "<p>" +
-        idea +
-        " ✨ Follow for more!" +
-        "</p>" +
+const style=document.getElementById("style").value;
 
-        "<h3>#️⃣ Hashtags</h3>" +
+const duration=document.getElementById("duration").value;
 
-        "<p>#reels #instagramreels #aivideo #viralreels</p>";
-    }
+if(!idea){
 
-  </script>
+alert("Pehle Reel ka idea likho.");
+
+return;
+
+}
+
+const scenes=[
+
+["Hook","0–3 sec",
+"Strong opening shot that immediately grabs attention"],
+
+["Main Shot","3–8 sec",
+"Show the main subject with smooth camera movement"],
+
+["Close-up","8–12 sec",
+"Detailed close-up with cinematic lighting"],
+
+["Highlight","12–15 sec",
+"Best visual moment with stylish transition"],
+
+["CTA","Ending",
+"End with Follow and Comment call-to-action"]
+
+];
+
+let sceneHTML="";
+
+let promptHTML="";
+
+for(let i=0;i<scenes.length;i++){
+
+sceneHTML +=
+
+"<div class='scene'>" +
+
+"<b>Scene "+(i+1)+": "+scenes[i][0]+"</b><br>" +
+
+"<span class='small'>"+scenes[i][1]+"</span><br>" +
+
+scenes[i][2] +
+
+".</div>";
+
+promptHTML +=
+
+"<p><b>Scene "+(i+1)+":</b> " +
+
+style +
+
+" video, " +
+
+esc(idea) +
+
+", " +
+
+scenes[i][2] +
+
+", vertical 9:16, high detail, natural motion, Instagram reel style.</p>";
+
+}
+
+document.getElementById("result").style.display="block";
+
+document.getElementById("result").innerHTML=
+
+"<h3>📝 Reel Concept</h3>" +
+
+"<div class='card'>" +
+
+"<b>Idea:</b> "+esc(idea)+"<br>" +
+
+"<b>Style:</b> "+style+"<br>" +
+
+"<b>Duration:</b> "+duration +
+
+"</div>" +
+
+"<h3>🎥 Scene Plan</h3>" +
+
+"<div class='card'>"+sceneHTML+"</div>" +
+
+"<h3>🤖 AI Video Prompts</h3>" +
+
+"<div class='card' id='prompts'>"+promptHTML+"</div>" +
+
+"<h3>📌 Caption</h3>" +
+
+"<div class='card'>"+
+
+esc(idea)+
+
+" ✨ Follow for more!</div>" +
+
+"<h3>#️⃣ Hashtags</h3>" +
+
+"<div class='card'>" +
+
+"#reels #instagramreels #aivideo #viralreels #reelitfeelit" +
+
+"</div>" +
+
+"<p class='small'>" +
+
+"Abhi ye Reel Plan aur AI prompts banata hai. " +
+
+"Actual AI video generation next step me connect karenge." +
+
+"</p>" +
+
+"<button class='copy' onclick='copyPrompts()'>" +
+
+"📋 Copy AI Prompts" +
+
+"</button>";
+
+}
+
+function copyPrompts(){
+
+const text=document.getElementById("prompts").innerText;
+
+navigator.clipboard.writeText(text).then(function(){
+
+alert("AI prompts copy ho gaye ✅");
+
+});
+
+}
+
+</script>
 
 </body>
 </html>
