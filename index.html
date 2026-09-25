@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Reel Maker</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .box {
+      max-width: 600px;
+      margin: 30px auto;
+      background: white;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    textarea {
+      width: 100%;
+      height: 120px;
+      padding: 12px;
+      box-sizing: border-box;
+      border-radius: 10px;
+      border: 1px solid #ccc;
+      font-size: 16px;
+    }
+
+    button {
+      width: 100%;
+      margin-top: 15px;
+      padding: 14px;
+      border: none;
+      border-radius: 10px;
+      background: #111;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    #result {
+      margin-top: 20px;
+      padding: 15px;
+      background: #f1f1f1;
+      border-radius: 10px;
+      display: none;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="box">
+
+    <h1>🎬 AI Reel Maker</h1>
+
+    <p>Apni Reel ka idea likho:</p>
+
+    <textarea id="idea"
+      placeholder="Example: Ek realistic fashion reel ek ladki ki..."></textarea>
+
+    <button onclick="generateReel()">
+      Generate Reel Plan
+    </button>
+
+    <div id="result"></div>
+
+  </div>
+
+  <script>
+
+    function generateReel() {
+
+      let idea = document.getElementById("idea").value;
+
+      if (idea.trim() === "") {
+        alert("Pehle Reel ka idea likho.");
+        return;
+      }
+
+      document.getElementById("result").style.display = "block";
+
+      document.getElementById("result").innerHTML =
+
+        "<h3>📝 Reel Script</h3>" +
+
+        "<p>" +
+        idea +
+        " — is idea par ek engaging Instagram Reel banayi jayegi." +
+        "</p>" +
+
+        "<h3>🎥 Scene Plan</h3>" +
+
+        "<p>Scene 1: Strong opening shot</p>" +
+        "<p>Scene 2: Main action</p>" +
+        "<p>Scene 3: Close-up shot</p>" +
+        "<p>Scene 4: Main highlight</p>" +
+        "<p>Scene 5: Ending + Follow CTA</p>" +
+
+        "<h3>📌 Caption</h3>" +
+
+        "<p>" +
+        idea +
+        " ✨ Follow for more!" +
+        "</p>" +
+
+        "<h3>#️⃣ Hashtags</h3>" +
+
+        "<p>#reels #instagramreels #aivideo #viralreels</p>";
+    }
+
+  </script>
+
+</body>
+</html>
