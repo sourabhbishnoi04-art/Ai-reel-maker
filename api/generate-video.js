@@ -17,8 +17,8 @@ export default async function handler(req, res) {
           },
           body: JSON.stringify({
             name: "AI Reel Maker Video",
-            end_seconds: 5,
-            aspect_ratio: "9:16",
+            end_seconds: 15,
+            aspect_ratio:"9:16",
             resolution: "480p",
             style: {
               prompt: prompt
